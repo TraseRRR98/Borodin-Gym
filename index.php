@@ -35,16 +35,16 @@
         <div class="row mt-5">
             <div class="col-md-4">
                 <h2>Best Fighter</h2>
-                <p>Name: John Doe</p>
+                <p>Name: John Tikhonov</p>
                 <p>Weight Class: Heavyweight</p>
                 <p>Record: 20-1-0</p>
             </div>
             <div class="col-md-4">
                 <h2>Last Fight</h2>
                 <p>Date: 2024-07-10</p>
-                <p>1st Fighter: John Doe</p>
+                <p>1st Fighter: John Tikhonov</p>
                 <p>2nd Fighter: Mike Smith</p>
-                <p>Result: John Doe won by KO</p>
+                <p>Result: John Tikhonov won by KO</p>
             </div>
             <div class="col-md-4">
                 <h2>Next Tournament</h2>
