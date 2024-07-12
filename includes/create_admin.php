@@ -7,8 +7,8 @@ $hashed_password = password_hash($admin_password, PASSWORD_DEFAULT);
 
  //Save credentials to a file
 $credentials = [
-    //'username' => $admin_username,
-   // 'password' => $hashed_password
+    'username' => $admin_username,
+    'password' => $hashed_password
 ];
 
 file_put_contents('../includes/admin_credentials.php', '<?php return ' . var_export($credentials, true) . ';');
