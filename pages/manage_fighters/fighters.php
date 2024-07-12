@@ -5,8 +5,8 @@ if (!isset($_SESSION['username'])) {
     exit();
 }
 
-include('../includes/dbconnect.php');
-include('../includes/accessibles.php');
+include('../../includes/dbconnect.php');
+include('../../includes/accessibles.php');
 
 // Enable error reporting
 error_reporting(E_ALL);
@@ -62,14 +62,14 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Manage Fighters - Borodin Gym</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link href="../css/styles.css" rel="stylesheet">
+    <link href="../../css/styles.css" rel="stylesheet">
     <!-- Alternative Font Awesome CDN -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 </head>
 <body>
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
         <div class="container-fluid">
-            <a class="navbar-brand" href="../index.php">Borodin Gym</a>
+            <a class="navbar-brand" href="../../index.php">Borodin Gym</a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
@@ -119,9 +119,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                                     <td>{$row['preferredName']}</td>
                                     <td>{$row['club']}</td>
                                     <td>
-                                        <a href='../pages/info.php?id={$row['ID']}' class='btn btn-info btn-sm mb-1'>Info</a>
-                                        <a href='edit.php?id={$row['ID']}' class='btn btn-warning btn-sm mb-1'>Edit</a>
-                                        <a href='delete.php?id={$row['ID']}' class='btn btn-danger btn-sm mb-1'>Delete</a>
+                                        <a href='info.php?id={$row['ID']}' class='btn btn-info btn-sm mb-1'>Info</a>
+                                        <a href='edit_fighter.php?id={$row['ID']}' class='btn btn-warning btn-sm mb-1'>Edit</a>
+                                        <a href='delete_fighter.php?id={$row['ID']}' class='btn btn-danger btn-sm mb-1' onclick=\"return confirm('Are you sure you want to delete this fighter?');\">Delete</a>
                                     </td>
                                 </tr>";
                             }

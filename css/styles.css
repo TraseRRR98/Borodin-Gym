@@ -11,3 +11,10 @@ main {
 footer {
     margin-top: auto;
 }
+
+.profile-photo {
+    width: 100%; /* Set this to the desired width */
+    max-width: 500px; /* or another value */
+    height: auto; /* Maintain aspect ratio */
+    object-fit: cover; /* Ensure the image covers the entire area */
+}

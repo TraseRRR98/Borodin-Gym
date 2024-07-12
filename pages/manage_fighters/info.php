@@ -5,8 +5,8 @@ if (!isset($_SESSION['username'])) {
     exit();
 }
 
-include('../includes/dbconnect.php');
-include('../includes/accessibles.php');
+include('../../includes/dbconnect.php');
+include('../../includes/accessibles.php');
 
 // Enable error reporting
 error_reporting(E_ALL);
@@ -49,7 +49,7 @@ if (isset($_GET['id'])) {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Fighter Info - Borodin Gym</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link href="../css/styles.css" rel="stylesheet">
+    <link href="../../css/styles.css" rel="stylesheet">
     <!-- Alternative Font Awesome CDN -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 </head>
@@ -63,7 +63,10 @@ if (isset($_GET['id'])) {
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav ms-auto">
                     <li class="nav-item">
-                        <a class="nav-link" href="../loginlogout/logout.php">Logout</a>
+                        <a class="nav-link" href="../../loginlogout/logout.php">Logout</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="fighters.php">Back to Fighters</a>
                     </li>
                 </ul>
             </div>
@@ -82,9 +85,9 @@ if (isset($_GET['id'])) {
                             <div class="row">
                                 <div class="col-md-4">
                                     <?php
-                                    $photoPath = $fighter['photo'] ? htmlspecialchars($fighter['photo']) : 'uploads/default.jpg';
+                                    $photoPath = $fighter['photo'] ? htmlspecialchars($fighter['photo']) : '../uploads/default.jpg';
                                     ?>
-                                    <img src="<?php echo $photoPath; ?>" class="img-fluid mb-3" alt="Fighter Photo">
+                                    <img src="<?php echo $photoPath; ?>" class="img-fluid mb-3 profile-photo" alt="Fighter Photo">
                                 </div>
                                 <div class="col-md-8">
                                     <p><strong>Preferred Name:</strong> <?php echo htmlspecialchars($fighter['preferredName']); ?></p>
