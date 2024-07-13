@@ -1,7 +1,7 @@
 <?php
 session_start();
 if (!isset($_SESSION['username'])) {
-    header("Location: ../loginlogout/login.html");
+    header("Location: ../../loginlogout/login.html");
     exit();
 }
 
@@ -24,10 +24,16 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $club = $_POST['club'];
     $dateStartTraining = $_POST['dateStartTraining'];
 
+    // Payment information
+    $initialPayment = $_POST['initialPayment'];
+    $paymentDate = $_POST['paymentDate'];
+    $nextPaymentDate = $_POST['nextPaymentDate'];
+    $coachID = $_POST['coachID'];
+
     // Handle file upload
     $photoPath = NULL;
     if (isset($_FILES['photo']) && $_FILES['photo']['error'] == UPLOAD_ERR_OK) {
-        $uploadsDir = 'uploads/';
+        $uploadsDir = '../../uploads/';
         if (!is_dir($uploadsDir)) {
             mkdir($uploadsDir, 0755, true);
         }
@@ -46,7 +52,19 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $stmt->bind_param("sssssssssss", $firstName, $lastName, $preferredName, $weightClass, $address, $city, $country, $dateOfBirth, $club, $dateStartTraining, $photoPath);
 
     if ($stmt->execute()) {
-        echo "New fighter added successfully";
+        $fighterID = $stmt->insert_id;
+
+        // Insert payment record
+        $paymentStmt = $conn->prepare("INSERT INTO payments (fighterID, amount, paymentDate, nextPaymentDate, coachID) VALUES (?, ?, ?, ?, ?)");
+        $paymentStmt->bind_param("idssi", $fighterID, $initialPayment, $paymentDate, $nextPaymentDate, $coachID);
+
+        if ($paymentStmt->execute()) {
+            echo "New fighter and initial payment added successfully";
+        } else {
+            echo "Error: " . $paymentStmt->error;
+        }
+
+        $paymentStmt->close();
     } else {
         echo "Error: " . $stmt->error;
     }
@@ -76,7 +94,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav ms-auto">
                     <li class="nav-item">
-                        <a class="nav-link" href="../loginlogout/logout.php">Logout</a>
+                        <a class="nav-link" href="../../loginlogout/logout.php">Logout</a>
                     </li>
                 </ul>
             </div>
@@ -143,6 +161,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body">
+                        <!-- Fighter Information Fields -->
                         <div class="mb-3">
                             <label for="firstName" class="form-label">First Name</label>
                             <input type="text" class="form-control" id="firstName" name="firstName" required>
@@ -186,6 +205,31 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                         <div class="mb-3">
                             <label for="photo" class="form-label">Photo</label>
                             <input type="file" class="form-control" id="photo" name="photo">
+                        </div>
+                        <!-- Payment Information Fields -->
+                        <div class="mb-3">
+                            <label for="initialPayment" class="form-label">Initial Payment Amount</label>
+                            <input type="number" class="form-control" id="initialPayment" name="initialPayment" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="paymentDate" class="form-label">Payment Date</label>
+                            <input type="date" class="form-control" id="paymentDate" name="paymentDate" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="nextPaymentDate" class="form-label">Next Payment Date</label>
+                            <input type="date" class="form-control" id="nextPaymentDate" name="nextPaymentDate" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="coachID" class="form-label">Coach</label>
+                            <select class="form-control" id="coachID" name="coachID" required>
+                                <!-- Populate with coaches from the database -->
+                                <?php
+                                $coaches = $conn->query("SELECT ID, name FROM coaches");
+                                while ($coach = $coaches->fetch_assoc()) {
+                                    echo "<option value='{$coach['ID']}'>{$coach['name']}</option>";
+                                }
+                                ?>
+                            </select>
                         </div>
                     </div>
                     <div class="modal-footer">

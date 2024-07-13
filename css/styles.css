@@ -18,3 +18,48 @@ footer {
     height: auto; /* Maintain aspect ratio */
     object-fit: cover; /* Ensure the image covers the entire area */
 }
+
+.progress-container {
+    width: 100%;
+    background-color: #f3f3f3;
+    border-radius: 5px;
+    position: relative;
+    height: 30px;
+}
+
+.progress-bar {
+    height: 30px;
+    background-color: #4caf50;
+    text-align: center;
+    line-height: 30px;
+    color: white;
+    border-radius: 5px;
+    transition: width 0.5s;
+    position: absolute;
+}
+
+.progress-bar.due {
+    background-color: #ff9800;
+}
+
+.progress-bar.overdue {
+    background-color: #f44336;
+}
+
+.progress-tick {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    width: 2px;
+    background-color: #000;
+    z-index: 2; /* Ensure ticks are above the progress bar */
+}
+
+.progress-label {
+    position: absolute;
+    bottom: -20px;
+    transform: translateX(-50%);
+    white-space: nowrap;
+    z-index: 2; /* Ensure labels are above the progress bar */
+}
+
