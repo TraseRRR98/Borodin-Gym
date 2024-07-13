@@ -264,7 +264,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Helper function to create ticks and labels
     function createTicks() {
-        for (let i = 1; i <= 12; i++) {
+        for (let i = 0; i <= 11; i++) {
             const tick = document.createElement('div');
             tick.classList.add('progress-tick');
             tick.style.left = `${(i / 12) * 100}%`;
@@ -273,7 +273,7 @@ document.addEventListener('DOMContentLoaded', function() {
             const label = document.createElement('div');
             label.classList.add('progress-label');
             label.style.left = `${(i / 12) * 100}%`;
-            label.innerText = new Date(currentYear, i - 1, 1).toLocaleString('default', { month: 'short' });
+            label.innerText = new Date(currentYear, i, 1).toLocaleString('default', { month: 'short' });
             progressBarContainer.appendChild(label);
         }
     }
@@ -283,12 +283,28 @@ document.addEventListener('DOMContentLoaded', function() {
         const now = new Date();
         let segmentStart = new Date(currentYear, 0, 1); // Start from January 1st of the current year
 
-        payments.forEach(payment => {
-            const paymentDate = new Date(payment.paymentDate);
-            const nextPaymentDate = new Date(payment.nextPaymentDate);
+        if (payments.length === 0) {
+            // No payments, create an overdue segment from the start of the year to now
+            const overdueDays = (now - segmentStart) / (1000 * 60 * 60 * 24);
+            const overdueSegmentWidth = (overdueDays / totalDaysInYear) * 100;
 
-            // Ensure we handle payments correctly within the year
-            if (paymentDate.getFullYear() === currentYear) {
+            const overdueSegment = document.createElement('div');
+            overdueSegment.classList.add('progress-bar');
+            overdueSegment.style.backgroundColor = '#f44336';
+            overdueSegment.style.left = `0%`;
+            overdueSegment.style.width = `${overdueSegmentWidth}%`;
+            overdueSegment.innerText = 'Overdue';
+            progressBarContainer.appendChild(overdueSegment);
+        } else {
+            payments.forEach(payment => {
+                const paymentDate = new Date(payment.paymentDate);
+                const nextPaymentDate = new Date(payment.nextPaymentDate);
+
+                // Adjust segmentStart to the paymentDate if payment covers past dues
+                if (paymentDate < segmentStart) {
+                    segmentStart = paymentDate;
+                }
+
                 // Calculate overdue segment if there's a gap between segmentStart and paymentDate
                 if (segmentStart < paymentDate) {
                     const overdueDays = (paymentDate - segmentStart) / (1000 * 60 * 60 * 24);
@@ -316,27 +332,27 @@ document.addEventListener('DOMContentLoaded', function() {
                 progressBarContainer.appendChild(paidSegment);
 
                 segmentStart = nextPaymentDate;
+            });
+
+            // Create the due or overdue segment from the last payment's next payment date to the current date
+            if (segmentStart < now) {
+                const daysCovered = (now - segmentStart) / (1000 * 60 * 60 * 24);
+                const segmentWidth = (daysCovered / totalDaysInYear) * 100;
+
+                const dueSegment = document.createElement('div');
+                dueSegment.classList.add('progress-bar');
+                dueSegment.style.left = `${(segmentStart - new Date(currentYear, 0, 1)) / (1000 * 60 * 60 * 24) / totalDaysInYear * 100}%`;
+                dueSegment.style.width = `${segmentWidth}%`;
+
+                if (now > segmentStart) {
+                    dueSegment.style.backgroundColor = '#f44336';
+                    dueSegment.innerText = 'Overdue';
+                } else {
+                    dueSegment.style.backgroundColor = '#ff9800';
+                    dueSegment.innerText = 'Due';
+                }
+                progressBarContainer.appendChild(dueSegment);
             }
-        });
-
-        // Create the due or overdue segment from the last payment's next payment date to the current date
-        if (segmentStart < now) {
-            const daysCovered = (now - segmentStart) / (1000 * 60 * 60 * 24);
-            const segmentWidth = (daysCovered / totalDaysInYear) * 100;
-
-            const dueSegment = document.createElement('div');
-            dueSegment.classList.add('progress-bar');
-            dueSegment.style.left = `${(segmentStart - new Date(currentYear, 0, 1)) / (1000 * 60 * 60 * 24) / totalDaysInYear * 100}%`;
-            dueSegment.style.width = `${segmentWidth}%`;
-
-            if (now > segmentStart) {
-                dueSegment.style.backgroundColor = '#f44336';
-                dueSegment.innerText = 'Overdue';
-            } else {
-                dueSegment.style.backgroundColor = '#ff9800';
-                dueSegment.innerText = 'Due';
-            }
-            progressBarContainer.appendChild(dueSegment);
         }
     }
 
@@ -344,5 +360,6 @@ document.addEventListener('DOMContentLoaded', function() {
     createProgressBarSegments(payments);
 });
 </script>
+
 </body>
 </html>
